@@ -71,16 +71,13 @@ from flask import Flask, send_file, request
 
 app = Flask(__name__)
 
-app.run(debug=True)
-
-cleanup_expired_captchas()
-
 @app.route("/captcha.png")
 def serve_captcha():
     """새로운 캡챠 이미지를 반환하는 엔드포인트."""
     try:
         # 캡챠 객체 생성
-        captcha = NCaptcha.ImageCaptcha(length=4, characters=NCaptcha.CaptchaOptions.ENGLISH_LOWER, font_size=20, expires_in_seconds=30)
+        captcha = NCaptcha.ImageCaptcha(length=4, characters=NCaptcha.CaptchaOptions.ENGLISH_LOWER, font_size=20,
+                                        expires_in_seconds=30)
 
         captcha_id, captcha_buffet, captcha_text = captcha.generate()
 
@@ -93,6 +90,7 @@ def serve_captcha():
     except Exception as e:
         print(f"캡챠 생성 오류: {e}")
         return "Internal Server Error", 500
+
 
 @app.route("/validate_captcha", methods=["POST"])
 def validate_captcha():
@@ -108,7 +106,7 @@ def validate_captcha():
     elif result == NCaptcha.CaptchaResult.MISMATCH:
         message = "❌ 캡챠 입력이 올바르지 않습니다."
         color = "red"
-    else: # NCaptcha.CaptchaResult.EXPIRED
+    else:  # NCaptcha.CaptchaResult.EXPIRED
         message = "⚠️ 캡챠 유효시간이 만료되었거나 ID가 잘못되었습니다. 다시 시도해주세요."
         color = "orange"
 
@@ -171,28 +169,31 @@ def index():
         window.onload = async function() {
             const captchaImage = document.getElementById('captcha-image');
             const captchaIdInput = document.getElementById('captcha-id');
-    
+
             // URL 뒤에 타임스탬프를 추가하여 캐싱을 방지합니다.
             const imageUrl = '/captcha.png?t=' + Date.now();
-    
+
             // fetch를 통해 캡챠 이미지와 ID를 한 번에 가져옵니다.
             const response = await fetch(imageUrl);
             const captchaId = response.headers.get('X-Captcha-ID');
-            
+
             // 이미지 데이터를 ArrayBuffer로 변환합니다.
             const blob = await response.blob();
-            
+
             // Blob을 Base64 문자열로 변환하여 img src에 직접 할당합니다.
             const reader = new FileReader();
             reader.onloadend = function() {
                 captchaImage.src = reader.result;
             }
             reader.readAsDataURL(blob);
-    
+
             captchaIdInput.value = captchaId;
         };
     </script>
     </html>
     """
 
+if __name__ == '__main__':
+    app.run(debug=True)
+    NCaptcha.cleanup_expired_captchas()
 ```
