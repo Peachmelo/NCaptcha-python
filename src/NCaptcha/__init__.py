@@ -23,6 +23,11 @@ class CaptchaOptions:
     SYMBOLS_ENGLISH_UPPER_DIGITS = string.punctuation + string.ascii_uppercase + string.digits
     SYMBOLS_ENGLISH_ALL_DIGITS = string.punctuation + string.ascii_letters + string.digits
 
+class CaptchaResult:
+    SUCCESS = "SUCCESS"
+    MISMATCH = "MISMATCH"
+    EXPIRED = "EXPIRED"
+
 
 class TextCaptcha:
     """캡챠 생성 및 검증을 위한 클래스."""
@@ -63,11 +68,11 @@ class TextCaptcha:
         """
         if datetime.datetime.now() > self.expiration_time:
             print("[Captcha] 유효시간이 만료되었습니다.")
-            return "EXPIRED"
+            return CaptchaResult.EXPIRED
 
         if user_input == self.text:
             print("[Captcha] 입력이 일치합니다.")
-            return "SUCCESS"
+            return CaptchaResult.SUCCESS
         else:
             print("[Captcha] 입력이 올바르지 않습니다.")
-            return "MISMATCH"
+            return CaptchaResult.MISMATCH

@@ -1,4 +1,4 @@
-from . import TextCaptcha, CaptchaOptions
+from . import TextCaptcha, CaptchaOptions, CaptchaResult
 
 def run_example():
     """
@@ -20,11 +20,11 @@ def run_example():
     result = captcha.validate(user_input)
 
     # 입력 검증
-    if result == "SUCCESS":
+    if result == CaptchaResult.SUCCESS:
         print("\n성공! 캡챠 입력이 일치합니다.")
-    elif result == "MISMATCH":
+    elif result == CaptchaResult.EXPIRED:
         print("\n실패! 유효시간이 만료되었습니다.")
-    elif result == "EXPIRED":
+    elif result == CaptchaResult.MISMATCH:
         print("\n실패! 캡챠 입력이 일치하지 않습니다.")
 
     print("\n----- 예시 종료 -----")
