@@ -1,3 +1,5 @@
+![PyPI - Downloads](https://img.shields.io/pypi/dm/NCaptcha-python)
+
 # NCaptcha-python
 파이썬용 **NCaptcha** 입니다.  
 
